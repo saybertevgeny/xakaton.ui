@@ -28,16 +28,16 @@ public class MainView extends Composite<VerticalLayout> {
     private static final String PRIORITY = "Установлен приоритет: ";
     private static final String EMPLOYEE = "Назначено сотруднику: ";
 
-    private final ClassificationService classificationService;
-    private final PrioritizationService prioritizationService;
+    private final Classification classificationService;
+    private final Prioritization prioritizationService;
     private final MessageService messageService;
 
     private MessageList messageList = new MessageList();
 
     private MessageInput messageInput = new MessageInput();
 
-    public MainView(ClassificationService classificationService,
-                    PrioritizationService prioritizationService,
+    public MainView(Classification classificationService,
+                    Prioritization prioritizationService,
                     MessageService messageService) {
         this.classificationService = classificationService;
         this.prioritizationService = prioritizationService;
