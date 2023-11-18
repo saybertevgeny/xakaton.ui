@@ -16,4 +16,5 @@ spring:
       ddl-auto: update
 
 external:
-  filepath:
+  category-url: http://xakaton.webtm.ru/classificator/category/predict?message=
+  priority-url: http://xakaton.webtm.ru/classificator/priority/predict?message=

@@ -1,8 +1,11 @@
 package com.example.application.views;
 
+import com.example.application.data.dto.MessageDto;
+import com.example.application.services.*;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
@@ -13,21 +16,32 @@ import com.vaadin.flow.router.RouteAlias;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @PageTitle("Classificator")
 @Route(value = "my-view")
 @RouteAlias(value = "")
 @Uses(Icon.class)
 public class MainView extends Composite<VerticalLayout> {
+    private static final String CATEGORY = "Ваше обращение отнесено к категории: ";
+    private static final String PRIORITY = "Установлен приоритет: ";
+    private static final String EMPLOYEE = "Назначено сотруднику: ";
+
+    private final ClassificationService classificationService;
+    private final PrioritizationService prioritizationService;
+    private final MessageService messageService;
 
     private MessageList messageList = new MessageList();
 
     private MessageInput messageInput = new MessageInput();
 
-    public MainView() {
+    public MainView(ClassificationService classificationService,
+                    PrioritizationService prioritizationService,
+                    MessageService messageService) {
+        this.classificationService = classificationService;
+        this.prioritizationService = prioritizationService;
+        this.messageService = messageService;
 //        HorizontalLayout layoutRow = new HorizontalLayout();
 //        AvatarItem avatarItem = new AvatarItem();
 //        VerticalLayout layoutColumn2 = new VerticalLayout();
@@ -54,27 +68,37 @@ public class MainView extends Composite<VerticalLayout> {
 //        layoutRow.add(avatarItem);
 //        getContent().add(layoutColumn2);
 //        layoutColumn2.add(messageList);
-//
+
+        getContent().setWidth("100%");
+        getContent().getStyle().set("flex-grow", "1");
+        messageInput.setWidth("100%");
+        messageInput.getStyle().set("flex-grow", "1");
+        messageList.setWidth("100%");
+        messageList.getStyle().set("flex-grow", "1");
+
+
         messageInput.addSubmitListener(this::clickMessageInput);
         getContent().add(messageList);
         getContent().add(messageInput);
     }
 
-    private void clickMessageInput(MessageInput.SubmitEvent e ){
-        String message = e.getValue();
-        if(message == null || message.isBlank()){
+    private void clickMessageInput(MessageInput.SubmitEvent e) {
+        String messageText = e.getValue();
+        if (messageText == null || messageText.isBlank()) {
             return;
         }
-        String classification = "Какая-то классификация";//TODO::вызвать сервис класификации
-        String priority = "Какая-то приоритезация";//TODO::вызвать сервис приоритезации
-        String employee = "Какая-то сотрудник";//TODO::вызвать сервис подсчета по сотрудникам
+        MessageDto message = messageService.retrieveParamsAndSave(messageText);
 
-        MessageListItem mItemClassification = new MessageListItem(classification, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), "Classificator");
-        MessageListItem mItemPriority = new MessageListItem(priority, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), "Prioritesator");
-        MessageListItem mItemEmployee = new MessageListItem(employee, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), "Employee");
+        String classification = nonNull(message.getCategory()) ? message.getCategory().getTitle() : "";
+        String priority = nonNull(message.getPriority()) ? message.getPriority().getTitle() : "";
+        String employee = "Какой-то сотрудник";//TODO::вызвать сервис подсчета по сотрудникам
+
+        MessageListItem mItemClassification = new MessageListItem(classification, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), CATEGORY);
+        MessageListItem mItemPriority = new MessageListItem(priority, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), PRIORITY);
+        MessageListItem mItemEmployee = new MessageListItem(employee, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), EMPLOYEE);
 
 
-        messageList.setItems(mItemClassification,mItemPriority,mItemEmployee);
+        messageList.setItems(mItemClassification, mItemPriority, mItemEmployee);
     }
 
 
