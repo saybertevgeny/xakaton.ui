@@ -17,5 +17,3 @@ spring:
 
 external:
   filepath:
-#        dicts: "C:\\Users\\nasty\\Desktop\\dicts.xlsx"
-#        projects: "C:\\Users\\nasty\\Desktop\\PI project.xlsx"

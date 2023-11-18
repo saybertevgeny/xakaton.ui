@@ -18,7 +18,7 @@ spring:
     web-application-type: servlet
 server:
   servlet:
-    context-path: /hackaton
+    context-path: /
 
 vaadin:
   whitelisted-packages: com.vaadin,org.vaadin,dev.hilla,com.example.application
