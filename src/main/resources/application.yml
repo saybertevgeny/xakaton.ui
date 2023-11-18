@@ -1,0 +1,25 @@
+spring:
+  servlet:
+    multipart:
+      enabled: true
+  #            file-size-threshold:
+  #            max-file-size:
+  #            max-request-size:
+  #            resolve-lazily:
+  sql:
+    init:
+      mode: always
+  jpa:
+    defer-datasource-initialization: true
+  profiles:
+    active: '@spring.profiles.active@'
+  main:
+    banner-mode: "OFF"
+    web-application-type: servlet
+server:
+  servlet:
+    context-path: /
+
+vaadin:
+  whitelisted-packages: com.vaadin,org.vaadin,dev.hilla,com.example.application
+  launch-browser: true
