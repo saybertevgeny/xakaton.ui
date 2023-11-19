@@ -49,7 +49,7 @@ public class MessageService {
         messageDto.setCategory(category);
         messageDto.setPriority(priority);
         if (nonNull(category)){
-            messageDto.setEmployee(employeeService.findEmployee(category));
+            messageDto.setEmployee(employeeService.findEmployee(category,priority));
         }
         repository.save(mapper.convert(messageDto));
         return messageDto;

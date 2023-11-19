@@ -3,6 +3,7 @@ package com.example.application.services;
 import com.example.application.data.dto.EmployeeDto;
 import com.example.application.data.dto.MessageCategoryDto;
 import com.example.application.data.dto.MessageDto;
+import com.example.application.data.dto.MessagePriorityDto;
 import com.example.application.data.mappers.EmployeeMapper;
 import com.example.application.data.mappers.MessageCategoryMapper;
 import com.example.application.jpa.entity.Employee;
@@ -11,6 +12,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class EmployeeService {
@@ -37,22 +40,29 @@ public class EmployeeService {
      * @param priority
      * @return
      */
-    public EmployeeDto findEmployee(MessageCategoryDto classification) {
+    public EmployeeDto findEmployee(MessageCategoryDto classification, MessagePriorityDto priority) {
         List<EmployeeDto> employees = getAllByCategory(classification);
-        Map<Integer,EmployeeDto> employeeWeights = new HashMap<>();
+        Map<EmployeeDto,Integer> employeeWeights = new HashMap<>();
         if (!employees.isEmpty()){
             employees.forEach(employeeDto -> {
-                employeeWeights.put(calculateCurrentWeight(employeeDto), employeeDto);
+                employeeWeights.put( employeeDto,calculateCurrentWeight(employeeDto));
             });
         }
-        Optional<Integer> minKey = employeeWeights.keySet().stream().min(Integer::compareTo);
-        return minKey.map(employeeWeights::get).orElse(null);
+        AtomicInteger minWeight= new AtomicInteger(99999);
+        AtomicReference<EmployeeDto> minEmployeDto = new AtomicReference<>();
+        employeeWeights.forEach((employe,weight) -> {
+            if(weight < minWeight.get()){
+                minWeight.set(weight);
+                minEmployeDto.set(employe);
+            }
+        });
+        return minEmployeDto.get();
     }
 
     public Integer calculateCurrentWeight(EmployeeDto employeeDto) {
         List<MessageDto> messageDtos = messageService.getAllByEmployee(employeeDto);
         Integer weight = 0;
-        if (messageDtos.isEmpty()) {
+        if (!messageDtos.isEmpty()) {
             for (MessageDto messageDto : messageDtos) {
                 weight += messageDto.getPriority().getId().intValue();
             }
