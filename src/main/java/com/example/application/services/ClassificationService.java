@@ -1,5 +1,6 @@
 package com.example.application.services;
 
+import com.example.application.data.dto.CategoryResponseDto;
 import com.example.application.data.dto.MessageCategoryDto;
 import com.example.application.data.mappers.MessageCategoryMapper;
 import com.example.application.jpa.entity.MessageCategory;
@@ -30,13 +31,10 @@ public class ClassificationService implements Classification{
     @Override
     public MessageCategoryDto classification(String message) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("message", message);
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        String title = restTemplate.getForObject(categoryUrl, MessageCategoryDto.class, request).getTitle();
-        MessageCategoryDto messageCategoryDto = mapper.convert(repository.findByTitle(title).orElse(new MessageCategory()));
+        CategoryResponseDto responseDto =restTemplate.getForEntity(categoryUrl + message, CategoryResponseDto.class).getBody();
+        MessageCategoryDto messageCategoryDto = mapper.convert(repository.findByTitle(responseDto.getResult()).orElse(new MessageCategory()));
         if (isNull(messageCategoryDto.getId())) {
-            messageCategoryDto.setTitle(title);
+            messageCategoryDto.setTitle(responseDto.getResult());
             messageCategoryDto = mapper.convert(repository.save(mapper.convert(messageCategoryDto)));
         }
         return messageCategoryDto;
