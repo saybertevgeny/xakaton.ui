@@ -1,5 +1,6 @@
 package com.example.application.services;
 
+import com.example.application.data.dto.CategoryResponseDto;
 import com.example.application.data.dto.MessagePriorityDto;
 import com.example.application.data.mappers.MessagePriorityMapper;
 import com.example.application.jpa.entity.MessageCategory;
@@ -30,13 +31,12 @@ public class PrioritizationService implements Prioritization{
     @Override
     public MessagePriorityDto prioritization(String message) {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("message", message);
-        HttpEntity<String> request = new HttpEntity<>(headers);
-        String title = restTemplate.getForObject(priorityUrl, MessagePriority.class, request).getTitle();
-        MessagePriorityDto messagePriorityDto = mapper.convert(repository.findByTitle(title).orElse(new MessagePriority()));
+        CategoryResponseDto responseDto =restTemplate.getForEntity(priorityUrl + message, CategoryResponseDto.class).getBody();
+        MessagePriorityDto messagePriorityDto = mapper.convert(
+                repository.findByTitle(responseDto.getResult()).orElse(new MessagePriority())
+        );
         if (isNull(messagePriorityDto.getId())) {
-            messagePriorityDto.setTitle(title);
+            messagePriorityDto.setTitle(responseDto.getResult());
             messagePriorityDto = mapper.convert(repository.save(mapper.convert(messagePriorityDto)));
         }
         return messagePriorityDto;
