@@ -75,6 +75,7 @@ public class MainView extends Composite<VerticalLayout> {
         messageInput.getStyle().set("flex-grow", "1");
         messageList.setWidth("100%");
         messageList.getStyle().set("flex-grow", "1");
+//        messageList.getStyle().set("placeholder", "Введите сообщение");
 
 
         messageInput.addSubmitListener(this::clickMessageInput);
@@ -91,7 +92,7 @@ public class MainView extends Composite<VerticalLayout> {
 
         String classification = nonNull(message.getCategory()) ? message.getCategory().getTitle() : "";
         String priority = nonNull(message.getPriority()) ? message.getPriority().getTitle() : "";
-        String employee = "Какой-то сотрудник";//TODO::вызвать сервис подсчета по сотрудникам
+        String employee = nonNull(message.getEmployee()) ? message.getEmployee().getName() : "";
 
         MessageListItem mItemClassification = new MessageListItem(classification, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), CATEGORY);
         MessageListItem mItemPriority = new MessageListItem(priority, LocalDateTime.now().minusDays(1).toInstant(ZoneOffset.UTC), PRIORITY);

@@ -6,8 +6,8 @@ server:
 
 spring:
   datasource:
-    username: fdasn1h
-    password: X13NFl5m8VgpapY18UZN
+    username: lkjdada
+    password: X1ad1221sadaY1v8UZN
     url: jdbc:postgresql://217.151.230.221:5454/xakaton?useUnicode=yes&characterEncoding=UTF-8
     driver-class-name: org.postgresql.Driver
   jpa:

@@ -20,5 +20,4 @@ public class EmployeeDto {
 
     private List<MessageCategoryDto> category;
 
-    private List<MessageDto> messages;
 }

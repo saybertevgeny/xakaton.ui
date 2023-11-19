@@ -3,6 +3,7 @@ package com.example.application.data.mappers;
 import com.example.application.data.dto.EmployeeDto;
 import com.example.application.jpa.entity.Employee;
 import org.mapstruct.Mapper;
+import org.springframework.context.annotation.Lazy;
 
 @Mapper(
         componentModel = "spring",
