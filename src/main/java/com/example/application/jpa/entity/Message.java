@@ -22,7 +22,7 @@ public class Message {
     @ManyToOne
     private MessageCategory category;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Employee employee;
 
 }

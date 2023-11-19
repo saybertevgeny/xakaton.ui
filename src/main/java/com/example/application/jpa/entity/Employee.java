@@ -17,9 +17,6 @@ public class Employee {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.EAGER)
     private List<MessageCategory> category;
-
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Message> messages;
 }
